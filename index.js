@@ -15,8 +15,11 @@ dotenv.config()
 const app = express()
 app.use(express.json())
 app.use(helmet())
+// app.use(cors({
+//     origin: "http://localhost:5173",
+// }))
 app.use(cors({
-    origin: "http://localhost:5173",
+    origin: ["http://localhost:5173", "https://auction-platform24.netlify.app"],
 }))
 app.use('/api', apiLimiter)
 app.set('query parser', 'extended')
