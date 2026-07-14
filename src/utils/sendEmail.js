@@ -16,7 +16,7 @@ const transporter = nodemailer.createTransport({
     pass: process.env.EMAIL_PASS
   }
 });
-
+console.log("Transporter user set to:", process.env.EMAIL_USER);
 // 1. Outbid Notification
 export const sendOutbidEmail = async (buyerEmail, buyerName, productTitle, newHighestBid) => {
   const mailOptions = {
