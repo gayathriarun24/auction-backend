@@ -1,11 +1,17 @@
+import { TransactionalEmailsApi, SendSmtpEmail } from '@getbrevo/brevo';
+import dotenv from 'dotenv';
 
-import * as SibApiV3Sdk from '@getbrevo/brevo';
-// 1. Outbid Notification
+dotenv.config();
+
+const apiInstance = new TransactionalEmailsApi();
+
+apiInstance.setApiKey(0, process.env.BREVO_API_KEY);
+
 export const sendOutbidEmail = async (buyerEmail, buyerName, productTitle, newHighestBid) => {
-  const emailData = new SibApiV3Sdk.SendSmtpEmail();
+  const emailData = new SendSmtpEmail();
   
   emailData.subject = `⚠️ You've been outbid on ${productTitle}!`;
-  emailData.sender = { name: "Auction Team", email: "your-verified-email@example.com" };
+  emailData.sender = { name: "Auction Team", email: "gayathri.dkp@gmail.com" };
   emailData.to = [{ email: buyerEmail, name: buyerName }];
   emailData.htmlContent = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; padding: 20px; border: 1px solid #e0e0e0; border-radius: 8px;">
@@ -18,16 +24,16 @@ export const sendOutbidEmail = async (buyerEmail, buyerName, productTitle, newHi
     await apiInstance.sendTransacEmail(emailData);
     console.log(`Outbid email sent via API to: ${buyerEmail}`);
   } catch (error) {
-    console.error('Brevo API Error:', error);
+    console.error('Brevo API Error:', error.response?.body || error);
   }
 };
 
-// 2. Winner Notification
+// 4. Winner Notification
 export const sendWinnerEmail = async (winnerEmail, winnerName, productTitle, finalPrice) => {
-  const emailData = new SibApiV3Sdk.SendSmtpEmail();
+  const emailData = new SendSmtpEmail();
   
   emailData.subject = `🎉 Congratulations! You won ${productTitle}`;
-  emailData.sender = { name: "Auction Team", email: "your-verified-email@example.com" };
+  emailData.sender = { name: "Auction Team", email: "gayathri.dkp@gmail.com" };
   emailData.to = [{ email: winnerEmail, name: winnerName }];
   emailData.htmlContent = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; padding: 20px; border: 1px solid #e0e0e0; border-radius: 8px;">
@@ -40,6 +46,6 @@ export const sendWinnerEmail = async (winnerEmail, winnerName, productTitle, fin
     await apiInstance.sendTransacEmail(emailData);
     console.log(`Winner email sent via API to: ${winnerEmail}`);
   } catch (error) {
-    console.error('Brevo API Error:', error);
+    console.error('Brevo API Error:', error.response?.body || error);
   }
 };
