@@ -3,8 +3,6 @@ import Bid from '../models/Bid.js';
 import User from '../models/User.js';
 import { sendWinnerEmail } from '../utils/sendEmail.js';
 
-// @desc    Create a new product/auction listing (Seller Only)
-// @route   POST /api/products
 export const createProduct = async (req, res, next) => {
     const { title, description, image, category, auctionType, startingPrice, endTime } = req.body;
 
@@ -26,9 +24,6 @@ export const createProduct = async (req, res, next) => {
         next(error);
     }
 };
-
-// @desc    Get all active auctions (Marketplace View for Buyers/Sellers)
-// @route   GET /api/products
 export const getAllProducts = async (req, res, next) => {
     try {
         // Find all active products and include seller's profile details (like ratings)
@@ -42,8 +37,6 @@ export const getAllProducts = async (req, res, next) => {
     }
 };
 
-// @desc    Get detailed item info by ID
-// @route   GET /api/products/:id
 export const getProductById = async (req, res, next) => {
     try {
         const product = await Product.findById(req.params.id).populate('sellerId', 'name sellerRating contactInfo');
@@ -59,8 +52,6 @@ export const getProductById = async (req, res, next) => {
     }
 };
 
-// @desc    Update product details (Seller Only)
-// @route   PUT /api/products/:id
 export const updateProduct = async (req, res, next) => {
     try {
         let product = await Product.findById(req.params.id);
@@ -87,8 +78,6 @@ export const updateProduct = async (req, res, next) => {
     }
 };
 
-// @desc    Delete product/auction listing (Seller Only)
-// @route   DELETE /api/products/:id
 export const deleteProduct = async (req, res, next) => {
     try {
         const product = await Product.findById(req.params.id);
@@ -111,8 +100,6 @@ export const deleteProduct = async (req, res, next) => {
     }
 };
 
-// @desc    Get all products for a specific Seller's Dashboard (Active & Unsold Inventory)
-// @route   GET /api/products/seller/dashboard
 export const getSellerDashboard = async (req, res, next) => {
     try {
         const products = await Product.find({ sellerId: req.user._id })
@@ -135,14 +122,12 @@ export const finalizeAuction = async (req, res) => {
 
      const sortOrder = product.auctionType === 'reverse' ? 1 : -1;
     
-    // 1. Fetch bids using the correct field 'productId'
     const bids = await Bid.find({ productId: id }).sort({ bidAmount: sortOrder });
 
     // 3. Logic to finalize
     product.status = 'completed';
     
     if (bids.length > 0) {
-      // Use 'buyerId' and 'bidAmount' as defined in your Bid model schema
       product.currentHighestBidder = bids[0].buyerId;
       product.winnerId = bids[0].buyerId;
       product.finalPrice = bids[0].bidAmount;
@@ -151,8 +136,6 @@ export const finalizeAuction = async (req, res) => {
     await product.save();
     if (product.winnerId) {
   try {
-    // You need to populate the winner's email first
-    // Assuming you have a User model imported
     const winner = await User.findById(product.winnerId);
     
     if (winner) {
@@ -165,12 +148,11 @@ export const finalizeAuction = async (req, res) => {
     }
   } catch (emailErr) {
     console.error("Email failed to send:", emailErr);
-    // We don't throw an error here because the auction was still finalized successfully
-  }
+      }
 }
     res.json({ message: 'Auction finalized', product });
   } catch (err) {
-    console.error("Finalize Error:", err); // The terminal will show the real reason here
+    console.error("Finalize Error:", err); 
     res.status(500).json({ message: 'Error finalizing', error: err.message });
   }
 };
@@ -198,7 +180,6 @@ export const getProductBids = async (req, res) => {
 };
 
 
-// In your controller (e.g., bidController.js)
 export const getBidActivity = async (req, res) => {
     try {
         const bids = await Bid.find({ buyerId: req.user._id })

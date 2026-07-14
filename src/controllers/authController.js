@@ -2,35 +2,29 @@ import User from '../models/User.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
-// Generate JWT Token Utility Function
 const generateToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '30d' });
 };
 
-// @desc    Register a new user (Buyer or Seller)
-// @route   POST /api/auth/register
 export const registerUser = async (req, res, next) => {
     const { name, email, password, contactInfo, role } = req.body;
 
     try {
-        // Check if user already exists
         const userExists = await User.findOne({ email });
         if (userExists) {
             res.status(400);
             return next(new Error('User already exists'));
         }
 
-        // Hash the password securely
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        // Create the user document
         const user = await User.create({
             name,
             email,
             password: hashedPassword,
             contactInfo,
-            role: role || 'buyer' // Fallback defaults to 'buyer'
+            role: role || 'buyer' 
         });
 
         if (user) {
@@ -51,8 +45,6 @@ export const registerUser = async (req, res, next) => {
     }
 };
 
-// @desc    Authenticate user & get token (Login)
-// @route   POST /api/auth/login
 export const loginUser = async (req, res, next) => {
     const { email, password } = req.body;
 
@@ -76,11 +68,8 @@ export const loginUser = async (req, res, next) => {
     }
 };
 
-// @desc    Get user profile data
-// @route   GET /api/auth/profile
 export const getUserProfile = async (req, res, next) => {
     try {
-        // req.user is set by our protect middleware
         const user = await User.findById(req.user._id).select('-password');
 
         if (user) {
