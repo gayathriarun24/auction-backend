@@ -1,6 +1,7 @@
 import Bid from '../models/Bid.js';
 import Product from '../models/Product.js';
-import { sendOutbidEmail } from '../config/emailService.js';
+// import { sendOutbidEmail } from '../config/emailService.js';
+import { sendOutbidEmail } from '../utils/sendEmail.js';
 
 // @desc    Place a bid on an item (Traditional, Reverse, or Sealed)
 // @route   POST /api/bids
