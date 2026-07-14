@@ -1,5 +1,5 @@
 
-
+import * as SibApiV3Sdk from '@getbrevo/brevo';
 // 1. Outbid Notification
 export const sendOutbidEmail = async (buyerEmail, buyerName, productTitle, newHighestBid) => {
   const emailData = new SibApiV3Sdk.SendSmtpEmail();
