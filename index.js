@@ -13,7 +13,9 @@ import bidRoute from './src/routes/bidRoutes.js'
 dotenv.config()
 
 const app = express()
+app.set('trust proxy', 1);
 app.use(express.json())
+
 app.use(helmet())
 // app.use(cors({
 //     origin: "http://localhost:5173",
