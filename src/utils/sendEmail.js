@@ -4,14 +4,23 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 // Define the transporter once, globally for this file
+// const transporter = nodemailer.createTransport({
+//     service: 'gmail',
+//     auth: {
+//         user: process.env.EMAIL_USER,
+//         pass: process.env.EMAIL_PASS
+//     }
+// });
 const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
-    }
+  host: 'smtp.gmail.com',
+  port: 465,
+  secure: true, 
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+  family: 4 // This forces IPv4 connection for cloud stability
 });
-
 // 1. Generic email sender
 export const sendEmail = async ({ to, subject, text }) => {
     console.log("Attempting to send email to:", to);
